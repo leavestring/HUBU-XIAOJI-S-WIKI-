@@ -34,17 +34,17 @@ const eslintConfig = defineConfig([
       'no-restricted-syntax': ['error', ...nextConfigRestrictedSyntaxRules],
     },
   },
-  // Override default ignores of eslint-config-next.
+  // 覆盖 eslint-config-next 的默认忽略规则
   globalIgnores([
-    // Default ignores of eslint-config-next:
+    // Next.js 默认忽略目录
     '.next/**',
     'out/**',
     'build/**',
     'next-env.d.ts',
-    // Build artifacts:
+    // 编译产物
     'server.js',
     'dist/**',
-    // Script files (CommonJS):
+    // 脚本文件 (CommonJS)
     'scripts/**/*.js',
   ]),
 ]);

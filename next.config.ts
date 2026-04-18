@@ -1,18 +1,13 @@
 import type { NextConfig } from 'next';
 
+const isProd = process.env.NODE_ENV === 'production';
+
 const nextConfig: NextConfig = {
-  // outputFileTracingRoot: path.resolve(__dirname, '../../'),  // Uncomment and add 'import path from "path"' if needed
-  /* config options here */
-  allowedDevOrigins: ['*.dev.coze.site'],
+  output: 'export', // 开启静态导出，用于 GitHub Pages 部署
   images: {
-    remotePatterns: [
-      {
-        protocol: 'https',
-        hostname: '*',
-        pathname: '/**',
-      },
-    ],
+    unoptimized: true, // 静态导出模式下必须禁用图片优化
   },
+  basePath: isProd ? '/HUBU-XIAOJI-S-WIKI-' : '',
 };
 
 export default nextConfig;

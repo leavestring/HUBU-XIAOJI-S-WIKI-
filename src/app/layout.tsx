@@ -1,6 +1,10 @@
 import type { Metadata } from 'next';
 import './globals.css';
 
+/**
+ * 全局元数据配置
+ * 优化 SEO 与社交媒体分享展示
+ */
 export const metadata: Metadata = {
   title: '小计 | 计算机学院IP形象',
   description:
@@ -28,6 +32,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
+    /* ─────────── 滚动条美化定制 ─────────── */
     <html lang="zh-CN" className="scroll-smooth">
       <body className="font-sans antialiased">{children}</body>
     </html>

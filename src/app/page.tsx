@@ -3,7 +3,7 @@
 import { useEffect, useState, useRef, useCallback } from 'react';
 import Image from 'next/image';
 
-/* ─────────── Data ─────────── */
+/* ─────────── 类型定义与静态数据 ─────────── */
 
 interface CharacterData {
   name: string;
@@ -16,12 +16,14 @@ interface CharacterData {
   codeSignature: string;
 }
 
+const ASSET_PREFIX = process.env.NODE_ENV === 'production' ? '/HUBU-XIAOJI-S-WIKI-' : '';
+
 const CHARACTERS: CharacterData[] = [
   {
     name: '小计',
     title: '男生版',
     subtitle: 'Boy Version',
-    image: '/xiaoji-bowtie.png',
+    image: `${ASSET_PREFIX}/assets/xiaoji-bowtie.png`,
     color: '#1e40af',
     traits: [
       { icon: '🧠', label: '聪颖过人', desc: '墨绿发色下藏着超级大脑，算法难题不在话下' },
@@ -45,7 +47,7 @@ const CHARACTERS: CharacterData[] = [
     name: '小计',
     title: '女生版',
     subtitle: 'Girl Version',
-    image: '/xiaoji-girl.png',
+    image: `${ASSET_PREFIX}/assets/xiaoji-girl.png`,
     color: '#7c3aed',
     traits: [
       { icon: '🎀', label: '温柔细致', desc: '藏蓝长发间别着蝴蝶结，代码风格优雅又规范' },
@@ -68,42 +70,47 @@ const CHARACTERS: CharacterData[] = [
 ];
 
 const EXPRESSIONS = [
-  { emoji: '😄', label: '开心', desc: '编译成功，零警告通过！' },
-  { emoji: '🤔', label: '思考', desc: '这段逻辑有点迷...' },
-  { emoji: '🤩', label: '兴奋', desc: '新框架发布啦！' },
-  { emoji: '😴', label: '休眠', desc: '编译中...zzZ' },
-  { emoji: '👋', label: '你好', desc: 'Hello World!' },
-  { emoji: '🔥', label: '燃', desc: '性能优化 200%!' },
-  { emoji: '😎', label: '自信', desc: 'Bug 已修复，我说的' },
-  { emoji: '🤗', label: '欢迎', desc: '新同学，一起写代码吧' },
-  { emoji: '💪', label: '加油', desc: 'Deadline 前绝不认输' },
+  { label: 'WiFi断开', image: `${ASSET_PREFIX}/assets/WiFi断开.jpg`, desc: '网络怎么又断了！' },
+  { label: '不想上班', image: `${ASSET_PREFIX}/assets/不想上班.jpg`, desc: '好想继续睡觉...' },
+  { label: '减肥失败', image: `${ASSET_PREFIX}/assets/减肥失败.jpg`, desc: '吃完这顿再减！' },
+  { label: '吃薯片', image: `${ASSET_PREFIX}/assets/吃薯片.jpg`, desc: '咔嚓咔嚓咔嚓。' },
+  { label: '周一综合征', image: `${ASSET_PREFIX}/assets/周一综合征.jpg`, desc: '为什么今天是周一？' },
+  { label: '周末好短', image: `${ASSET_PREFIX}/assets/周末好短.jpg`, desc: '周末去哪儿了？' },
+  { label: '已经结束了', image: `${ASSET_PREFIX}/assets/已经结束了.jpg`, desc: '项目终于上线了。' },
+  { label: '我emo了', image: `${ASSET_PREFIX}/assets/我emo了.jpg`, desc: 'Bug 怎么越改越多...' },
+  { label: '我累了', image: `${ASSET_PREFIX}/assets/我累了.jpg`, desc: '写不动了，躺会儿。' },
+  { label: '摸鱼被抓', image: `${ASSET_PREFIX}/assets/摸鱼被抓.jpg`, desc: '老板怎么站在后面！' },
+  { label: '栓Q', image: `${ASSET_PREFIX}/assets/栓Q.jpg`, desc: '真是谢谢你啊。' },
+  { label: '生气', image: `${ASSET_PREFIX}/assets/生气.jpg`, desc: '谁把生产库删了！！' },
+  { label: '真的会写', image: `${ASSET_PREFIX}/assets/真的会写.jpg`, desc: '我真的会写这段代码！' },
+  { label: '躺平', image: `${ASSET_PREFIX}/assets/躺平.jpg`, desc: '就这样吧，毁灭吧。' },
 ];
 
 const TIMELINE = [
   {
-    year: '2024.03',
+    year: '2022.01',
     event: '灵感萌芽',
     desc: '计算机学院决定打造专属IP形象，以"Hello World"为精神内核，开始构思角色设计方向。',
   },
   {
-    year: '2024.05',
+    year: '2022.01',
     event: '征集启动',
-    desc: '面向全院六千余名学生征集吉祥物设计作品，数百件创意涌入，墨绿发色的少年雏形初现。',
+    desc: '面向全院六千余名学生征集吉祥物设计作品的名称，数百件创意涌入。',
   },
   {
-    year: '2024.06',
+    year: '2022.01',
     event: '形象诞生',
-    desc: '经过班级推优、全院投票、专家评审，"小计"形象正式确定——电路衬衫、工装裤、透明眼镜的元气少年。',
+    desc: '经过班级推优、全院投票、专家评审，"小计"形象和名称正式确定。',
   },
   {
-    year: '2024.09',
-    event: '表情包上线',
-    desc: '小计专属表情包正式发布，男女生双版形象席卷校园聊天框。',
+    year: '2026.04',
+    event: '创作征集',
+    desc: '小计专属表情包开始征集，我们制作了一系列表情。',
   },
   {
-    year: '2025.01',
+    year: '2026.04',
     event: '双版登场',
-    desc: '小计·男生版与小计·女生版双生形象正式亮相，一男一女，从此计算机学院有了最酷的代言人。',
+    desc: '小计·男生版与小计·女生版双生形象表情包正式亮相。',
   },
 ];
 
@@ -116,7 +123,7 @@ const FUN_FACTS = [
   { q: '小计的隐藏技能？', a: '能在 0.01 秒内找到你代码里第 1024 行的分号缺失！' },
 ];
 
-/* ─────────── Particle Background ─────────── */
+/* ─────────── 粒子背景组件 ─────────── */
 
 function ParticleBackground() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -199,7 +206,7 @@ function ParticleBackground() {
   );
 }
 
-/* ─────────── Section Wrapper with Intersection Observer ─────────── */
+/* ─────────── 动画滚动容器组件 (Intersection Observer) ─────────── */
 
 function AnimatedSection({
   children,
@@ -237,7 +244,7 @@ function AnimatedSection({
   );
 }
 
-/* ─────────── Typing Effect ─────────── */
+/* ─────────── 打字机效果组件 ─────────── */
 
 function TypingText({ text, speed = 80 }: { text: string; speed?: number }) {
   const [displayed, setDisplayed] = useState('');
@@ -271,7 +278,7 @@ function TypingText({ text, speed = 80 }: { text: string; speed?: number }) {
   );
 }
 
-/* ─────────── Code Block ─────────── */
+/* ─────────── 代码块展示组件 ─────────── */
 
 function CodeBlock({ code, delay = 0 }: { code: string; delay?: number }) {
   const [visible, setVisible] = useState(false);
@@ -287,11 +294,11 @@ function CodeBlock({ code, delay = 0 }: { code: string; delay?: number }) {
 
   return (
     <div
-      className={`overflow-hidden rounded-xl border border-blue-900/30 bg-slate-900 font-mono text-sm transition-all duration-700 ${
-        visible ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
-      }`}
+      className={`overflow-hidden rounded-xl border border-blue-900/30 bg-slate-900 font-mono text-sm transition-all duration-700 ${visible ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
+        }`}
     >
       <div className="flex items-center gap-2 border-b border-slate-700/50 px-4 py-2">
+        {/* 模拟编辑器窗口控制按钮 */}
         <div className="h-3 w-3 rounded-full bg-red-500/80" />
         <div className="h-3 w-3 rounded-full bg-yellow-500/80" />
         <div className="h-3 w-3 rounded-full bg-green-500/80" />
@@ -313,7 +320,7 @@ function CodeBlock({ code, delay = 0 }: { code: string; delay?: number }) {
   );
 }
 
-/* ─────────── Click Sparkle ─────────── */
+/* ─────────── 鼠标点击火花特效 Hook ─────────── */
 
 function useClickSparkle() {
   const [sparkles, setSparkles] = useState<
@@ -357,7 +364,7 @@ function useClickSparkle() {
   return { addSparkle, SparkleElements };
 }
 
-/* ─────────── Navigation ─────────── */
+/* ─────────── 导航栏组件 ─────────── */
 
 function Nav() {
   const [scrolled, setScrolled] = useState(false);
@@ -391,9 +398,8 @@ function Nav() {
 
   return (
     <nav
-      className={`fixed top-0 right-0 left-0 z-40 transition-all duration-300 ${
-        scrolled ? 'glass-dark shadow-lg' : 'bg-transparent'
-      }`}
+      className={`fixed top-0 right-0 left-0 z-40 transition-all duration-300 ${scrolled ? 'glass-dark shadow-lg' : 'bg-transparent'
+        }`}
     >
       <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
         <div className="flex items-center gap-2">
@@ -410,11 +416,10 @@ function Nav() {
               <a
                 key={link.id}
                 href={`#${link.id}`}
-                className={`rounded-lg px-4 py-2 text-sm font-medium transition-all ${
-                  activeSection === link.id
-                    ? 'bg-white/15 text-cs-cyan'
-                    : 'text-white/70 hover:bg-white/10 hover:text-white'
-                }`}
+                className={`rounded-lg px-4 py-2 text-sm font-medium transition-all ${activeSection === link.id
+                  ? 'bg-white/15 text-cs-cyan'
+                  : 'text-white/70 hover:bg-white/10 hover:text-white'
+                  }`}
               >
                 {link.label}
               </a>
@@ -426,7 +431,7 @@ function Nav() {
   );
 }
 
-/* ─────────── Hero Section ─────────── */
+/* ─────────── 首屏展示区 (Hero Section) ─────────── */
 
 function HeroSection() {
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
@@ -449,7 +454,7 @@ function HeroSection() {
       id="hero"
       className="relative flex min-h-screen items-center justify-center overflow-hidden bg-gradient-to-br from-slate-950 via-blue-950 to-indigo-950"
     >
-      {/* Decorative circles */}
+      {/* 装饰性背景圆环 */}
       <div className="pointer-events-none absolute inset-0">
         <div className="animate-rotate-slow absolute -top-40 -right-40 h-[500px] w-[500px] rounded-full border border-cs-cyan/10" />
         <div
@@ -462,7 +467,7 @@ function HeroSection() {
       </div>
 
       <div className="relative z-10 mx-auto max-w-7xl px-6 py-32 text-center">
-        {/* Main title */}
+        {/* 主标题区域 */}
         <div className="mb-6">
           <span className="inline-block rounded-full border border-cs-cyan/30 bg-cs-cyan/10 px-4 py-1.5 text-sm font-medium text-cs-cyan">
             Computer Science College IP
@@ -477,7 +482,7 @@ function HeroSection() {
           <TypingText text="计算机学院专属IP形象 —— 墨绿发色的元气少年，电路衬衫与Hello World，陪你探索代码世界的无限可能" />
         </p>
 
-        {/* Floating mascot preview */}
+        {/* 浮动形象预览 */}
         {mounted && (
           <div className="relative mx-auto mb-12 flex items-center justify-center gap-8 sm:gap-16">
             <div
@@ -489,7 +494,7 @@ function HeroSection() {
               <div className="relative">
                 <div className="absolute -inset-4 rounded-3xl bg-gradient-to-r from-blue-600/20 to-cyan-400/20 blur-xl" />
                 <Image
-                  src="/xiaoji-bowtie.png"
+                  src={`${ASSET_PREFIX}/assets/xiaoji-bowtie.png`}
                   alt="小计·男生版"
                   width={224}
                   height={224}
@@ -512,7 +517,7 @@ function HeroSection() {
               <div className="relative">
                 <div className="absolute -inset-4 rounded-3xl bg-gradient-to-r from-purple-600/20 to-pink-400/20 blur-xl" />
                 <Image
-                  src="/xiaoji-girl.png"
+                  src={`${ASSET_PREFIX}/assets/xiaoji-girl.png`}
                   alt="小计·女生版"
                   width={224}
                   height={224}
@@ -526,7 +531,7 @@ function HeroSection() {
           </div>
         )}
 
-        {/* Scroll hint */}
+        {/* 滚动提示 */}
         <a
           href="#characters"
           className="inline-flex flex-col items-center gap-2 text-sm text-slate-400 transition-colors hover:text-cs-cyan"
@@ -551,7 +556,7 @@ function HeroSection() {
   );
 }
 
-/* ─────────── Character Card ─────────── */
+/* ─────────── 角色详细信息卡片 ─────────── */
 
 function CharacterCard({
   character,
@@ -566,11 +571,10 @@ function CharacterCard({
   return (
     <AnimatedSection
       delay={index * 200}
-      className={`flex flex-col items-center gap-8 lg:flex-row ${
-        isLeft ? '' : 'lg:flex-row-reverse'
-      }`}
+      className={`flex flex-col items-center gap-8 lg:flex-row ${isLeft ? '' : 'lg:flex-row-reverse'
+        }`}
     >
-      {/* Image */}
+      {/* 角色形象预览图 */}
       <div className="relative w-full max-w-md lg:w-1/2">
         <div className="group relative cursor-pointer" onClick={() => setIsFlipped(!isFlipped)}>
           <div className="absolute -inset-4 rounded-3xl bg-gradient-to-r opacity-30 blur-2xl transition-opacity group-hover:opacity-50"
@@ -603,7 +607,7 @@ function CharacterCard({
                 </div>
               </div>
             </div>
-            {/* Flip hint */}
+            {/* 翻转提示标签 */}
             <div className="absolute top-4 right-4 rounded-full bg-white/10 px-3 py-1 text-xs text-white/70 backdrop-blur-sm">
               {isFlipped ? '返回' : '点击翻转'}
             </div>
@@ -652,7 +656,7 @@ function CharacterCard({
   );
 }
 
-/* ─────────── Characters Section ─────────── */
+/* ─────────── 核心形象展示区 ─────────── */
 
 function CharactersSection() {
   return (
@@ -685,7 +689,7 @@ function CharactersSection() {
   );
 }
 
-/* ─────────── Story / Timeline Section ─────────── */
+/* ─────────── 发展历程展示区 ─────────── */
 
 function StorySection() {
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
@@ -698,7 +702,7 @@ function StorySection() {
       <div className="relative z-10 mx-auto max-w-7xl px-6">
         <AnimatedSection className="mb-16 text-center">
           <span className="mb-4 inline-block rounded-full border border-cs-blue/30 bg-cs-blue/10 px-4 py-1.5 text-sm font-medium text-cs-cyan">
-            Origin Story
+            起源故事
           </span>
           <h2 className="mb-4 text-4xl font-black text-white sm:text-5xl">
             诞生<span className="gradient-text">纪事</span>
@@ -708,27 +712,6 @@ function StorySection() {
           </p>
         </AnimatedSection>
 
-        {/* Campus image */}
-        <AnimatedSection className="mb-16">
-          <div className="relative mx-auto max-w-4xl overflow-hidden rounded-3xl border border-white/10">
-            <Image
-              src="/xiaoji-campus.jpeg"
-              alt="计算机学院校园"
-              width={1024}
-              height={576}
-              className="h-64 w-full object-cover sm:h-80"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/30 to-transparent" />
-            <div className="absolute bottom-0 left-0 right-0 p-6 sm:p-8">
-              <p className="text-xl font-bold text-white sm:text-2xl">
-                计算机学院 · 数字的起点
-              </p>
-              <p className="mt-1 text-sm text-slate-300">
-                这里是小计诞生的地方，每一行代码都在这里书写，每一个梦想都在这里启航。
-              </p>
-            </div>
-          </div>
-        </AnimatedSection>
 
         {/* Timeline */}
         <div className="relative mx-auto max-w-3xl">
@@ -738,35 +721,31 @@ function StorySection() {
           {TIMELINE.map((item, i) => (
             <AnimatedSection key={i} delay={i * 150}>
               <div
-                className={`relative mb-12 flex items-start gap-6 ${
-                  i % 2 === 0 ? 'sm:flex-row' : 'sm:flex-row-reverse'
-                }`}
+                className={`relative mb-12 flex items-start gap-6 ${i % 2 === 0 ? 'sm:flex-row' : 'sm:flex-row-reverse'
+                  }`}
               >
                 {/* Dot */}
                 <div className="absolute left-8 z-10 -translate-x-1/2 sm:left-1/2">
                   <div
-                    className={`h-4 w-4 rounded-full border-2 transition-all duration-300 ${
-                      activeIndex === i
-                        ? 'scale-150 border-cs-cyan bg-cs-cyan shadow-lg shadow-cs-cyan/50'
-                        : 'border-slate-500 bg-slate-800'
-                    }`}
+                    className={`h-4 w-4 rounded-full border-2 transition-all duration-300 ${activeIndex === i
+                      ? 'scale-150 border-cs-cyan bg-cs-cyan shadow-lg shadow-cs-cyan/50'
+                      : 'border-slate-500 bg-slate-800'
+                      }`}
                   />
                 </div>
 
                 {/* Content */}
                 <div
-                  className={`ml-16 w-full sm:ml-0 sm:w-[calc(50%-2rem)] ${
-                    i % 2 === 0 ? 'sm:pr-8 sm:text-right' : 'sm:pl-8'
-                  }`}
+                  className={`ml-16 w-full sm:ml-0 sm:w-[calc(50%-2rem)] ${i % 2 === 0 ? 'sm:pr-8 sm:text-right' : 'sm:pl-8'
+                    }`}
                   onMouseEnter={() => setActiveIndex(i)}
                   onMouseLeave={() => setActiveIndex(null)}
                 >
                   <div
-                    className={`cursor-pointer rounded-2xl border p-5 transition-all duration-300 ${
-                      activeIndex === i
-                        ? 'border-cs-cyan/30 bg-cs-cyan/5 shadow-lg shadow-cs-cyan/10'
-                        : 'border-white/5 bg-white/5'
-                    }`}
+                    className={`cursor-pointer rounded-2xl border p-5 transition-all duration-300 ${activeIndex === i
+                      ? 'border-cs-cyan/30 bg-cs-cyan/5 shadow-lg shadow-cs-cyan/10'
+                      : 'border-white/5 bg-white/5'
+                      }`}
                   >
                     <span className="text-sm font-mono font-bold text-cs-cyan">
                       {item.year}
@@ -786,10 +765,10 @@ function StorySection() {
   );
 }
 
-/* ─────────── Emoji Section ─────────── */
+/* ─────────── 表情包交互展示区 ─────────── */
 
 function EmojiSection() {
-  const [clickedEmoji, setClickedEmoji] = useState<string | null>(null);
+  const [activeEmoji, setActiveEmoji] = useState(EXPRESSIONS.find(e => e.label === '生气') || EXPRESSIONS[0]);
 
   return (
     <section
@@ -799,55 +778,47 @@ function EmojiSection() {
       <div className="relative z-10 mx-auto max-w-7xl px-6">
         <AnimatedSection className="mb-16 text-center">
           <span className="mb-4 inline-block rounded-full border border-cs-pink/30 bg-cs-pink/10 px-4 py-1.5 text-sm font-medium text-cs-pink">
-            Emoji Pack
+            表情包系列
           </span>
           <h2 className="mb-4 text-4xl font-black text-white sm:text-5xl">
             表情<span className="gradient-text-warm">包</span>
           </h2>
           <p className="mx-auto max-w-xl text-lg text-slate-400">
-            小计的日常表情，每一个都写满了程序员的真实写照。
+            小计的日常表情，每一个都写满了程序员的真实写照。点击下方相应的按钮进行查看。
           </p>
         </AnimatedSection>
 
-        {/* Emoji Grid */}
-        <div className="mx-auto grid max-w-3xl grid-cols-2 gap-4 sm:grid-cols-3">
+        {/* 表情包选择按钮组 */}
+        <AnimatedSection className="mx-auto mb-12 flex max-w-4xl flex-wrap justify-center gap-3">
           {EXPRESSIONS.map((expr, i) => (
-            <AnimatedSection key={i} delay={i * 80}>
-              <div
-                className="card-hover group cursor-pointer rounded-2xl border border-white/5 bg-white/5 p-6 text-center"
-                onClick={() => {
-                  setClickedEmoji(expr.label);
-                  setTimeout(() => setClickedEmoji(null), 1500);
-                }}
-              >
-                <div className="mb-3 text-5xl transition-transform duration-300 group-hover:scale-125 group-hover:rotate-12">
-                  {expr.emoji}
-                </div>
-                <div className="text-base font-bold text-white">
-                  {expr.label}
-                </div>
-                <div className="mt-1 text-xs text-slate-400">{expr.desc}</div>
-                {clickedEmoji === expr.label && (
-                  <div className="mt-2 animate-bounce-in text-sm font-medium text-cs-cyan">
-                    已复制!
-                  </div>
-                )}
-              </div>
-            </AnimatedSection>
+            <button
+              key={i}
+              onClick={() => setActiveEmoji(expr)}
+              className={`rounded-full px-5 py-2 text-sm font-bold transition-all duration-300 border ${activeEmoji.label === expr.label
+                ? 'bg-gradient-to-r from-cs-pink to-cs-purple text-white shadow-lg shadow-cs-pink/30 border-cs-pink/50 scale-105'
+                : 'bg-white/5 text-slate-300 border-white/10 hover:bg-white/10 hover:text-white'
+                }`}
+            >
+              {expr.label}
+            </button>
           ))}
-        </div>
+        </AnimatedSection>
 
-        {/* Emoji pack image */}
-        <AnimatedSection className="mt-12">
-          <div className="relative mx-auto max-w-2xl overflow-hidden rounded-3xl border border-white/10">
-            <Image
-              src="/xiaoji-emoji.jpeg"
-              alt="小计表情包"
-              width={1024}
-              height={1024}
-              className="w-full object-cover"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-slate-950/60 to-transparent" />
+        {/* 表情包内容展示区 */}
+        <AnimatedSection className="mx-auto max-w-xl">
+          <div className="relative overflow-hidden rounded-3xl border border-white/10 bg-slate-900/50 p-8 text-center backdrop-blur-sm shadow-2xl">
+            <h3 className="mb-2 text-2xl font-bold text-white">{activeEmoji.label}</h3>
+            <p className="mb-8 text-sm text-slate-400">{activeEmoji.desc}</p>
+            <div className="relative mx-auto aspect-square w-full max-w-xs overflow-hidden rounded-2xl bg-white/5 border border-white/10 group">
+              <Image
+                key={activeEmoji.image}
+                src={activeEmoji.image}
+                alt={activeEmoji.label}
+                fill
+                className="object-contain p-4 animate-slide-up"
+                unoptimized
+              />
+            </div>
           </div>
         </AnimatedSection>
       </div>
@@ -855,7 +826,7 @@ function EmojiSection() {
   );
 }
 
-/* ─────────── Fun Facts Section ─────────── */
+/* ─────────── 趣味百科展示区 ─────────── */
 
 function FunSection() {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
@@ -870,7 +841,7 @@ function FunSection() {
       <div className="relative z-10 mx-auto max-w-7xl px-6">
         <AnimatedSection className="mb-16 text-center">
           <span className="mb-4 inline-block rounded-full border border-cs-cyan/30 bg-cs-cyan/10 px-4 py-1.5 text-sm font-medium text-cs-cyan">
-            Fun Facts
+            小计趣闻
           </span>
           <h2 className="mb-4 text-4xl font-black text-white sm:text-5xl">
             趣味<span className="gradient-text">档案</span>
@@ -897,9 +868,8 @@ function FunSection() {
                     </span>
                   </div>
                   <svg
-                    className={`h-5 w-5 shrink-0 text-slate-400 transition-transform duration-300 ${
-                      openIndex === i ? 'rotate-180' : ''
-                    }`}
+                    className={`h-5 w-5 shrink-0 text-slate-400 transition-transform duration-300 ${openIndex === i ? 'rotate-180' : ''
+                      }`}
                     fill="none"
                     viewBox="0 0 24 24"
                     stroke="currentColor"
@@ -913,9 +883,8 @@ function FunSection() {
                   </svg>
                 </div>
                 <div
-                  className={`overflow-hidden transition-all duration-300 ${
-                    openIndex === i ? 'max-h-40 opacity-100' : 'max-h-0 opacity-0'
-                  }`}
+                  className={`overflow-hidden transition-all duration-300 ${openIndex === i ? 'max-h-40 opacity-100' : 'max-h-0 opacity-0'
+                    }`}
                 >
                   <div className="border-t border-white/5 px-5 py-4">
                     <p className="text-slate-300">{fact.a}</p>
@@ -930,7 +899,7 @@ function FunSection() {
   );
 }
 
-/* ─────────── Footer ─────────── */
+/* ─────────── 页脚组件 ─────────── */
 
 function Footer() {
   return (
@@ -939,14 +908,14 @@ function Footer() {
       <div className="relative z-10 mx-auto max-w-7xl px-6 text-center">
         <div className="mb-6 flex items-center justify-center gap-4">
           <Image
-            src="/xiaoji-bowtie.png"
+            src={`${ASSET_PREFIX}/assets/xiaoji-bowtie.png`}
             alt="小计·男生版"
             width={64}
             height={64}
             className="h-16 w-16 rounded-2xl border border-white/10 object-cover"
           />
           <Image
-            src="/xiaoji-girl.png"
+            src={`${ASSET_PREFIX}/assets/xiaoji-girl.png`}
             alt="小计·女生版"
             width={64}
             height={64}
@@ -964,14 +933,14 @@ function Footer() {
           <span className="h-1 w-1 rounded-full bg-slate-600" />
           <span>IP形象设计</span>
           <span className="h-1 w-1 rounded-full bg-slate-600" />
-          <span>2024 - 2025</span>
+          <span>2022 - 2026</span>
         </div>
       </div>
     </footer>
   );
 }
 
-/* ─────────── Main Page ─────────── */
+/* ─────────── 主页面入口 ─────────── */
 
 export default function HomePage() {
   const { addSparkle, SparkleElements } = useClickSparkle();
